@@ -1,0 +1,56 @@
+@startuml ERD
+entity "Users" as Users {
+    * user_id : UUID [PK] <<generated>>
+    --
+    login_id : VARCHAR(50) [UNIQUE]
+    password : VARCHAR(255)
+    email : VARCHAR(100) [UNIQUE]
+    join_date : TIMESTAMP
+}
+
+entity "Categories" as Categories {
+    * category_id : UUID [PK] <<generated>>
+    --
+    name : VARCHAR(50)
+    description : TEXT
+}
+
+entity "Posts" as Posts {
+    * post_id : UUID [PK] <<generated>>
+    --
+    title : VARCHAR(100)
+    content : TEXT
+    created_date : TIMESTAMP
+    last_updated_date : TIMESTAMP
+    --
+    user_id : UUID [FK]
+    category_id : UUID [FK]
+}
+
+entity "Comments" as Comments {
+    * comment_id : UUID [PK] <<generated>>
+    --
+    content : TEXT
+    created_date : TIMESTAMP
+    --
+    post_id : UUID [FK]
+    user_id : UUID [FK]
+}
+
+entity "Tags" as Tags {
+    * tag_id : UUID [PK] <<generated>>
+    --
+    name : VARCHAR(50) [UNIQUE]
+}
+
+entity "Post_Tags" as Post_Tags {
+    * post_id : UUID [FK]
+    * tag_id : UUID [FK]
+}
+
+Users ||--o{ Posts : "1:N"
+Posts ||--o{ Comments : "1:N"
+Users ||--o{ Comments : "1:N"
+Categories ||--o{ Posts : "1:N"
+Posts }o--o{ Tags : "N:M" (via Post_Tags)
+@enduml
